@@ -28,7 +28,6 @@ const getFolders = async (spaces: Space[][], searchedFolderName?: string) => {
       })
     )
     .flat();
-  
   const folders = await Promise.all(foldersPromises);
 
   const foldersArray = folders.map((folder: any) => folder.data.folders);
@@ -40,6 +39,7 @@ const getFolders = async (spaces: Space[][], searchedFolderName?: string) => {
       lists: items.lists || [],
     }))
   );
+
 
   if (!searchedFolderName) return foldersFiltered;
   if(searchedFolderName.length <= 2) throw new Error('Not enought letters.');

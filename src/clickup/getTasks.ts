@@ -4,12 +4,23 @@ import { convertMsToHM } from "../utils/convertTime";
 import { Folder, List } from "./getFolders";
 
 export type Sorting = "asc" | "desc" | undefined;
+export type Task = {
+  task: {
+    id: string;
+    name: string;
+    subfolder: string;
+    status: string;
+    timeEstimate: number;
+    timeSpent: number;
+    devLvl: string;
+  }
+}
 
 const getTasks = async (
   folders: Array<Folder[]>,
   sort: Sorting,
   searchedTaskName?: string
-) => {
+): Promise<Task[][][]> => {
   const tasksPromises = folders
     .map((folder: Folder[]) =>
       folder.map((folder: Folder) =>
@@ -28,7 +39,7 @@ const getTasks = async (
     taskRequest.map((singleRequest: any) => singleRequest.data)
   );
 
-  const filteredTasks = tasks.map((item: any) =>
+  const filteredTasks: Task[][] = tasks.map((item: any) =>
     item.map((item: any) =>
       item.tasks.map((task: any) => {
         const [customField] = task.custom_fields.filter(
@@ -39,6 +50,7 @@ const getTasks = async (
           task: {
             id: task.id,
             name: task.name,
+            subfolder: task.list.name,
             status: task.status.status,
             timeEstimate:
               task.time_estimate === null
@@ -54,41 +66,41 @@ const getTasks = async (
   );
 
   if (!sort || sort === "asc") {
-    const sortedTaskAsc = filteredTasks.map((tasks: any) =>
+    const sortedTaskAsc: Task[][][] = filteredTasks.map((tasks: any) =>
       tasks.map((tasks: any) =>
-        tasks.sort((a: any, b: any) => (a.task.status > b.task.status ? 1 : -1))
+        tasks.sort(
+          (a: any, b: any) =>
+            a.task.status.localeCompare(b.task.status)
+        )
       )
     );
     if (!searchedTaskName) return sortedTaskAsc;
-    const filteredByName = filterTasksByName(sortedTaskAsc, searchedTaskName);
+    const filteredByName: Task[][][] = filterTasksByName(sortedTaskAsc, searchedTaskName);
     return filteredByName;
   } else {
-    const sortedTaskDesc = filteredTasks.flatMap((tasks: any) =>
+    const sortedTaskDesc: Task[][][] = filteredTasks.flatMap((tasks: any) =>
       tasks.map((task: any) =>
-        task.sort((a: any, b: any) => (a.task.status < b.task.status ? 1 : -1))
+        task.sort(
+          (a: any, b: any) =>
+            b.task.status.localeCompare(a.task.status)
+        )
       )
     );
     if (!searchedTaskName) return sortedTaskDesc;
-    const filteredByName = filterTasksByName(sortedTaskDesc, searchedTaskName);
+    const filteredByName: Task[][][] = filterTasksByName(sortedTaskDesc, searchedTaskName);
     return filteredByName;
   }
 
-  // if (!searchedTaskName) return filteredTasks;
-  // const filteredByName = filterTasksByName(filteredTasks, searchedTaskName);
-  // const filteredByName = filteredTasks.map((tasks: any[][]) =>
-  //   tasks.map((task: any[]) =>
-  //     task.filter((item: any) => item.task.name === searchedTaskName)
-  //   )
-  // );
-  // return filteredByName;
 };
 
 export default getTasks;
 
-const filterTasksByName = (tasks: any[], name: string) => {
+const filterTasksByName = (tasks: any[], name: string): Task[][][] => {
   const filteredByName = tasks.map((tasks: any[]) =>
     tasks.map((task: any[]) =>
-      tasks.filter((item: any) => item.task.name.toLowerCase().includes(name.toLowerCase()))
+      tasks.filter((item: any) =>
+        item.task.name.toLowerCase().includes(name.toLowerCase())
+      )
     )
   );
   return filteredByName;

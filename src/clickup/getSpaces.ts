@@ -23,8 +23,8 @@ const getSpaces = async (
     (spaceReq: any) => spaceReq.data.spaces
   );
 
-  const spacesDataFiltered: Space[][] = spacesData.map((space: any) =>
-    space.map((items: any) => ({
+  const spacesDataFiltered: Space[][] = spacesData.map((space: Space[]) =>
+    space.map((items: Space) => ({
       id: items.id,
       name: items.name,
     }))
@@ -33,12 +33,12 @@ const getSpaces = async (
   if (!searchedSpaceName) return spacesDataFiltered;
 
   const nameFilteredSpaces: Space[][] = spacesDataFiltered
-    .map((space: any) =>
-      space.filter((items: any) =>
+    .map((space: Space[]) =>
+      space.filter((items: Space) =>
         items.name.toLowerCase().includes(searchedSpaceName.toLowerCase())
       )
     )
-    .filter((space: any) => space.length !== 0);
+    .filter((space: Space[]) => space.length !== 0);
 
   return nameFilteredSpaces;
 };
