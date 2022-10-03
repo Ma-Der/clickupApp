@@ -8,7 +8,7 @@ W .env podać baseUrl clickup'a oraz apiToken stworzony w koncie clickup'a.
 
 Funkcja **prepareData** przyjmuje cztery parametry:
 
-1. Sortowanie po kategorii tasków
+1. Sortowanie po kategorii tasków (opcjonalne)
     - asc - alfabetycznie
     - desc - od końca alfabetu
 2. Space - nazwa firmy (opcjonalne)
