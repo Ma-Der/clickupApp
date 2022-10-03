@@ -4,7 +4,7 @@ import { baseUrl } from "../config/envVar";
 export type Space = {
   id: string;
   name: string;
-}
+};
 
 const getSpaces = async (
   teamIds: string[],
@@ -29,10 +29,16 @@ const getSpaces = async (
       name: items.name,
     }))
   );
-  
+
   if (!searchedSpaceName) return spacesDataFiltered;
 
-  const nameFilteredSpaces: Space[][] = spacesDataFiltered.map((space: any) => space.filter((items: any) => items.name === searchedSpaceName)).filter((space: any) => space.length !== 0);
+  const nameFilteredSpaces: Space[][] = spacesDataFiltered
+    .map((space: any) =>
+      space.filter((items: any) =>
+        items.name.toLowerCase().includes(searchedSpaceName.toLowerCase())
+      )
+    )
+    .filter((space: any) => space.length !== 0);
 
   return nameFilteredSpaces;
 };

@@ -2,12 +2,13 @@ import getTeams from "./clickup/getTeams";
 import getSpaces from "./clickup/getSpaces";
 import getFolders from "./clickup/getFolders";
 import getTasks from './clickup/getTasks';
+import { Sorting } from "./clickup/getTasks";
 
-const prepareData = async (spaceName?: string, folderName?: string, taskName?: string) => {
+const prepareData = async (sort?: Sorting, spaceName?: string, folderName?: string, taskName?: string) => {
   const teams = await getTeams();
   const spaces = await getSpaces(teams, spaceName);
   const folders = await getFolders(spaces, folderName);
-  const tasks = await getTasks(folders, taskName);
+  const tasks = await getTasks(folders, sort, taskName);
   
   const final = teams.map((team: string) => {
     const folder = folders.map((folder: any, i) => folder.map((singleFolder: any, j: number) => {
@@ -23,8 +24,7 @@ const prepareData = async (spaceName?: string, folderName?: string, taskName?: s
   return final;
 };
 
-prepareData('Outsmartly', 'Big Blanket', 'OS Yotpo plugin implementation').then((res) => {
-  const value = res[0];
+prepareData().then((res) => {
+  const value = res;
   console.dir(value, { depth: null})
-  //console.log(value)
 });

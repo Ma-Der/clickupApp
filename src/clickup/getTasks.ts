@@ -3,8 +3,11 @@ import { baseUrl } from "../config/envVar";
 import { convertMsToHM } from "../utils/convertTime";
 import { Folder, List } from "./getFolders";
 
+export type Sorting = "asc" | "desc" | undefined;
+
 const getTasks = async (
   folders: Array<Folder[]>,
+  sort: Sorting,
   searchedTaskName?: string
 ) => {
   const tasksPromises = folders
@@ -49,13 +52,44 @@ const getTasks = async (
       })
     )
   );
-  if (!searchedTaskName) return filteredTasks;
-  const filteredByName = filteredTasks.map((tasks: any[][]) =>
+
+  if (!sort || sort === "asc") {
+    const sortedTaskAsc = filteredTasks.map((tasks: any) =>
+      tasks.map((tasks: any) =>
+        tasks.sort((a: any, b: any) => (a.task.status > b.task.status ? 1 : -1))
+      )
+    );
+    if (!searchedTaskName) return sortedTaskAsc;
+    const filteredByName = filterTasksByName(sortedTaskAsc, searchedTaskName);
+    return filteredByName;
+  } else {
+    const sortedTaskDesc = filteredTasks.flatMap((tasks: any) =>
+      tasks.map((task: any) =>
+        task.sort((a: any, b: any) => (a.task.status < b.task.status ? 1 : -1))
+      )
+    );
+    if (!searchedTaskName) return sortedTaskDesc;
+    const filteredByName = filterTasksByName(sortedTaskDesc, searchedTaskName);
+    return filteredByName;
+  }
+
+  // if (!searchedTaskName) return filteredTasks;
+  // const filteredByName = filterTasksByName(filteredTasks, searchedTaskName);
+  // const filteredByName = filteredTasks.map((tasks: any[][]) =>
+  //   tasks.map((task: any[]) =>
+  //     task.filter((item: any) => item.task.name === searchedTaskName)
+  //   )
+  // );
+  // return filteredByName;
+};
+
+export default getTasks;
+
+const filterTasksByName = (tasks: any[], name: string) => {
+  const filteredByName = tasks.map((tasks: any[]) =>
     tasks.map((task: any[]) =>
-      task.filter((item: any) => item.task.name === searchedTaskName)
+      tasks.filter((item: any) => item.task.name.toLowerCase().includes(name.toLowerCase()))
     )
   );
   return filteredByName;
 };
-
-export default getTasks;

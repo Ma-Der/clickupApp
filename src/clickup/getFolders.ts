@@ -42,8 +42,9 @@ const getFolders = async (spaces: Space[][], searchedFolderName?: string) => {
   );
 
   if (!searchedFolderName) return foldersFiltered;
+  if(searchedFolderName.length <= 2) throw new Error('Not enought letters.');
   return foldersFiltered.map((folder: Folder[]) =>
-    folder.filter(({name}) => name === searchedFolderName)
+    folder.filter(({name}) => name.toLowerCase().includes(searchedFolderName.toLowerCase()))
   );
 };
 
