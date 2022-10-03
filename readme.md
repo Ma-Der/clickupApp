@@ -1,5 +1,7 @@
 ## Uruchomienie projektu:
 
+W .env podać baseUrl clickup'a oraz apiToken stworzony w koncie clickup'a.
+
 *npm install*
 
 *npm run start*

@@ -13,8 +13,8 @@ export type Task = {
     timeEstimate: number;
     timeSpent: number;
     devLvl: string;
-  }
-}
+  };
+};
 
 const getTasks = async (
   folders: Array<Folder[]>,
@@ -68,29 +68,32 @@ const getTasks = async (
   if (!sort || sort === "asc") {
     const sortedTaskAsc: Task[][][] = filteredTasks.map((tasks: any) =>
       tasks.map((tasks: any) =>
-        tasks.sort(
-          (a: any, b: any) =>
-            a.task.status.localeCompare(b.task.status)
+        tasks.sort((a: any, b: any) =>
+          a.task.status.localeCompare(b.task.status)
         )
       )
     );
     if (!searchedTaskName) return sortedTaskAsc;
-    const filteredByName: Task[][][] = filterTasksByName(sortedTaskAsc, searchedTaskName);
+    const filteredByName: Task[][][] = filterTasksByName(
+      sortedTaskAsc,
+      searchedTaskName
+    );
     return filteredByName;
   } else {
     const sortedTaskDesc: Task[][][] = filteredTasks.flatMap((tasks: any) =>
       tasks.map((task: any) =>
-        task.sort(
-          (a: any, b: any) =>
-            b.task.status.localeCompare(a.task.status)
+        task.sort((a: any, b: any) =>
+          b.task.status.localeCompare(a.task.status)
         )
       )
     );
     if (!searchedTaskName) return sortedTaskDesc;
-    const filteredByName: Task[][][] = filterTasksByName(sortedTaskDesc, searchedTaskName);
+    const filteredByName: Task[][][] = filterTasksByName(
+      sortedTaskDesc,
+      searchedTaskName
+    );
     return filteredByName;
   }
-
 };
 
 export default getTasks;

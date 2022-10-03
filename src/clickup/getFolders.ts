@@ -9,14 +9,14 @@ export type List = {
     id: string;
     name: string;
     access: boolean;
-  }
-}
+  };
+};
 
 export type Folder = {
   id: string;
   name: string;
-  lists: List[]
-}
+  lists: List[];
+};
 
 const getFolders = async (spaces: Space[][], searchedFolderName?: string) => {
   const foldersPromises = spaces
@@ -40,11 +40,12 @@ const getFolders = async (spaces: Space[][], searchedFolderName?: string) => {
     }))
   );
 
-
   if (!searchedFolderName) return foldersFiltered;
-  if(searchedFolderName.length <= 2) throw new Error('Not enought letters.');
+  if (searchedFolderName.length <= 2) throw new Error("Not enought letters.");
   return foldersFiltered.map((folder: Folder[]) =>
-    folder.filter(({name}) => name.toLowerCase().includes(searchedFolderName.toLowerCase()))
+    folder.filter(({ name }) =>
+      name.toLowerCase().includes(searchedFolderName.toLowerCase())
+    )
   );
 };
 

@@ -32,6 +32,6 @@ const prepareData = async (
 };
 
 prepareData().then((res) => {
-  console.dir(res, { depth: null})
+  console.dir(res, { depth: null });
   //console.log(res)
 });
